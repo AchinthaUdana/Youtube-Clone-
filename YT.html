@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionTube - Next-Gen Video Platform</title>
+    <style>
+        /* CSS Reset & Variables */
+        :root {
+            --primary: #ff0000;
+            --primary-dark: #cc0000;
+            --dark: #0f0f0f;
+            --dark-gray: #222222;
+            --medium-gray: #3d3d3d;
+            --light-gray: #aaaaaa;
+            --text-light: #f1f1f1;
+            --text-dark: #272727;
+            --accent: #3da6ff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--dark);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff0000, #ff6b00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-container {
+            display: flex;
+            flex: 0.6;
+            max-width: 600px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 20px 0 0 20px;
+            background: var(--dark-gray);
+            color: var(--text-light);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-btn {
+            padding: 0 1.5rem;
+            border: 1px solid var(--medium-gray);
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            background: var(--dark-gray);
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-btn:hover {
+            background: var(--medium-gray);
+        }
+
+        .voice-search {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .voice-search:hover {
+            background: var(--medium-gray);
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: var(--medium-gray);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            font-size: 0.6rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Main Content Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 240px;
+            background: var(--dark);
+            padding: 1rem 0;
+            position: sticky;
+            top: 56px;
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .sidebar-item:hover {
+            background: var(--medium-gray);
+        }
+
+        .sidebar-item.active {
+            background: var(--medium-gray);
+        }
+
+        .sidebar-item i {
+            margin-right: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--light-gray);
+            text-transform: uppercase;
+        }
+
+        .channel-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 1.5rem;
+            object-fit: cover;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Video Card Styles */
+        .video-card {
+            background: transparent;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+            border-radius: 8px;
+            background: var(--dark-gray);
+        }
+
+        .thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .video-card:hover .thumbnail {
+            transform: scale(1.03);
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .video-info {
+            display: flex;
+            padding: 0.8rem 0.2rem;
+        }
+
+        .channel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 0.8rem;
+            object-fit: cover;
+        }
+
+        .video-details {
+            flex: 1;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .channel-name {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            margin-bottom: 0.2rem;
+        }
+
+        .video-stats {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+        }
+
+        .menu-btn {
+            visibility: hidden;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .video-card:hover .menu-btn {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Categories Bar */
+        .categories {
+            display: flex;
+            padding: 1rem;
+            overflow-x: auto;
+            background: var(--dark);
+            position: sticky;
+            top: 56px;
+            z-index: 90;
+            gap: 0.8rem;
+        }
+
+        .category-btn {
+            padding: 0.5rem 0.8rem;
+            background: var(--medium-gray);
+            color: var(--text-light);
+            border: none;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-btn:hover {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+
+        .category-btn.active {
+            background: var(--text-light);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* Player Overlay */
+        .player-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-container {
+            width: 80%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .close-player {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .video-player {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: black;
+            border-radius: 8px;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 72px;
+            }
+            .sidebar-item span, .sidebar-title {
+                display: none;
+            }
+            .sidebar-item {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            .sidebar-item i {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                display: none;
+            }
+            .content {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                display: none;
+            }
+            .content {
+                grid-template-columns: 1fr;
+            }
+            .player-container {
+                width: 95%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <i class="fas fa-play-circle logo-icon"></i>
+            <span class="logo-text">VisionTube</span>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="voice-search">
+            <i class="fas fa-microphone"></i>
+        </div>
+
+        <div class="header-icons">
+            <div class="icon-btn">
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="icon-btn">
+                <i class="fas fa-th"></i>
+            </div>
+            <div class="icon-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar">
+        </div>
+    </header>
+
+    <!-- Categories Bar -->
+    <div class="categories">
+        <button class="category-btn active">All</button>
+        <button class="category-btn">Music</button>
+        <button class="category-btn">Gaming</button>
+        <button class="category-btn">Live</button>
+        <button class="category-btn">Programming</button>
+        <button class="category-btn">Podcasts</button>
+        <button class="category-btn">Comedy</button>
+        <button class="category-btn">Recently uploaded</button>
+        <button class="category-btn">Watched</button>
+        <button class="category-btn">New to you</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-compass"></i>
+                    <span>Explore</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Shorts</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Subscriptions</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-item">
+                    <i class="fas fa-photo-film"></i>
+                    <span>Library</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Watch later</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Liked videos</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Subscriptions</div>
+                <div class="sidebar-item">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="channel-avatar">
+                    <span>Tech Today</span>
+                </div>
+                <div class="sidebar-item">
+                    <img src="https://randomuser.me/api/portraits/men/22.jpg" class="channel-avatar">
+                    <span>Code Masters</span>
+                </div>
+                <div class="sidebar-item">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" class="channel-avatar">
+                    <span>Design Hub</span>
+                </div>
+                <div class="sidebar-item">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" class="channel-avatar">
+                    <span>AI Insights</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">More from VisionTube</div>
+                <div class="sidebar-item">
+                    <i class="fas fa-fire"></i>
+                    <span>Trending</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-music"></i>
+                    <span>Music</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Gaming</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-newspaper"></i>
+                    <span>News</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Video Cards -->
+            <div class="video-card" data-video-id="1">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">10:30</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/men/1.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">Building a Modern Web App with React and Node.js</h3>
+                        <p class="channel-name">Code Masters</p>
+                        <p class="video-stats">1.2M views · 3 days ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+
+            <div class="video-card" data-video-id="2">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/PkZNo7MFNFg/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">15:45</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/women/2.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">Learn JavaScript in 2023 - Complete Beginner's Guide</h3>
+                        <p class="channel-name">Tech Today</p>
+                        <p class="video-stats">856K views · 1 week ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+
+            <div class="video-card" data-video-id="3">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/1Rs2ND1ryYc/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">22:18</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/men/3.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">CSS Grid vs Flexbox - When to Use Each</h3>
+                        <p class="channel-name">Design Hub</p>
+                        <p class="video-stats">543K views · 2 weeks ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+
+            <div class="video-card" data-video-id="4">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/7ghhRHRP6t4/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">8:52</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/women/4.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">10 VS Code Extensions You Need in 2023</h3>
+                        <p class="channel-name">Dev Tools</p>
+                        <p class="video-stats">1.5M views · 4 days ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+
+            <div class="video-card" data-video-id="5">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/f02mOEt11OQ/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">12:30</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/men/5.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">How ChatGPT Works Technically | Architecture Explained</h3>
+                        <p class="channel-name">AI Insights</p>
+                        <p class="video-stats">2.3M views · 1 day ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+
+            <div class="video-card" data-video-id="6">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/2UBFIhS1YBk/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">18:15</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/women/6.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">Building a Full Stack App with Next.js and Firebase</h3>
+                        <p class="channel-name">Web Dev Simplified</p>
+                        <p class="video-stats">987K views · 5 days ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+
+            <div class="video-card" data-video-id="7">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/2V1UZFBJ0Ek/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">25:40</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/men/7.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">TypeScript Crash Course for React Developers</h3>
+                        <p class="channel-name">Type Master</p>
+                        <p class="video-stats">765K views · 3 weeks ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+
+            <div class="video-card" data-video-id="8">
+                <div class="thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/6eEK1c0Zq8w/hqdefault.jpg" class="thumbnail">
+                    <span class="duration-badge">14:22</span>
+                </div>
+                <div class="video-info">
+                    <img src="https://randomuser.me/api/portraits/women/8.jpg" class="channel-icon">
+                    <div class="video-details">
+                        <h3 class="video-title">UI/UX Design Principles Every Developer Should Know</h3>
+                        <p class="channel-name">Design Hub</p>
+                        <p class="video-stats">1.1M views · 2 weeks ago</p>
+                    </div>
+                    <button class="icon-btn menu-btn"><i class="fas fa-ellipsis-vertical"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Overlay -->
+    <div class="player-overlay">
+        <div class="player-container">
+            <button class="close-player"><i class="fas fa-times"></i></button>
+            <div class="video-player">
+                <!-- Video would be embedded here -->
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <script>
+        // DOM Elements
+        const videoCards = document.querySelectorAll('.video-card');
+        const playerOverlay = document.querySelector('.player-overlay');
+        const closePlayer = document.querySelector('.close-player');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+
+        // Video Card Click Handler
+        videoCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't open player if clicking on menu button
+                if (e.target.closest('.menu-btn')) {
+                    return;
+                }
+                
+                const videoId = card.getAttribute('data-video-id');
+                openVideoPlayer(videoId);
+            });
+        });
+
+        // Open Video Player
+        function openVideoPlayer(videoId) {
+            // In a real app, you would load the appropriate video based on videoId
+            playerOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close Video Player
+        closePlayer.addEventListener('click', () => {
+            playerOverlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Pause video when closing
+            const iframe = document.querySelector('.video-player iframe');
+            if (iframe) {
+                iframe.src = iframe.src; // Reset src to stop video
+            }
+        });
+
+        // Category Button Active State
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Theme Toggle
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-theme');
+            
+            if (body.classList.contains('light-theme')) {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                themeToggle.style.background = '#ff9500';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                themeToggle.style.background = 'var(--primary)';
+            }
+        });
+
+        // Light Theme Styles (dynamically added)
+        const style = document.createElement('style');
+        style.textContent = `
+            .light-theme {
+                --dark: #ffffff;
+                --dark-gray: #f9f9f9;
+                --medium-gray: #e0e0e0;
+                --light-gray: #606060;
+                --text-light: #030303;
+                --text-dark: #f1f1f1;
+            }
+            
+            .light-theme .sidebar,
+            .light-theme header {
+                background: #ffffff;
+                border-color: #e0e0e0;
+            }
+            
+            .light-theme .search-input,
+            .light-theme .search-btn,
+            .light-theme .voice-search {
+                background: #f9f9f9;
+                border-color: #ccc;
+            }
+            
+            .light-theme .category-btn {
+                background: #f2f2f2;
+                color: #030303;
+            }
+            
+            .light-theme .category-btn:hover {
+                background: #e0e0e0;
+            }
+            
+            .light-theme .category-btn.active {
+                background: #030303;
+                color: white;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Simulate loading more videos on scroll
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                // In a real app, you would fetch more videos here
+                console.log('Loading more videos...');
+            }
+        });
+
+        // Voice Search Simulation
+        const voiceSearch = document.querySelector('.voice-search');
+        voiceSearch.addEventListener('click', () => {
+            alert('Voice search activated. Speak now...');
+            // In a real app, you would implement voice recognition here
+        });
+    </script>
+</body>
+</html>
